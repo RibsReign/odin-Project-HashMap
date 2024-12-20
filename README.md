@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/90a417c5-1ea5-42ea-8367-22f1f68e26fc)# odin-Project-HashMap
+# odin-Project-HashMap
 Assignment
 
 Start by creating a HashMap class. It should have at least two variables for load factor and capacity. Then proceed to create the following methods:
