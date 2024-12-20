@@ -1,0 +1,14 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    rbenv (9001)
+
+PLATFORMS
+  ruby
+  x86_64-linux
+
+DEPENDENCIES
+  rbenv (~> 9001)
+
+BUNDLED WITH
+   2.5.23
