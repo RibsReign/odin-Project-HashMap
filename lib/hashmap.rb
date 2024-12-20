@@ -32,18 +32,19 @@ class HashMap
   end
 
   def get(key)
-    bucket_index = hash(key) % capacity
+    bucket_index = hash(key) % @capacity
     raise IndexError if bucket_index.negative? || bucket_index >= @buckets.length
 
     if @buckets[bucket_index].nil?
       nil
     else
+      @buckets[bucket_index][@buckets[bucket_index].find(key)] if @buckets[bucket_index].is_a?(LinkedList)
       @buckets[bucket_index]
     end
   end
 
-  def has?(_key)
-    false
+  def has?(key)
+    
   end
 
   private
