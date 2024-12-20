@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'node'
+
 # Class that adds actions in regards to linked lists
 class LinkedList
   def initialize
@@ -98,11 +99,21 @@ class LinkedList
     return nil if @head.nil?
 
     node = @head
-    result = ''
+    result = "( #{if_hash_entry_to_s(node)} ) -> "
     until  node.next_node.nil?
-      result += "( #{node.value} ) -> "
+      result += "( #{if_hash_entry_to_s(node)} ) -> "
       node = node.next_node
     end
     "#{result}nil"
+  end
+
+  private
+
+  def if_hash_entry_to_s(node)
+    node.value unless node.value.is_a?(HashEntry)
+    hash_entry = node.value
+    key = hash_entry.key
+    value = hash_entry.value
+    "[#{key}][#{value}]"
   end
 end
