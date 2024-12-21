@@ -90,6 +90,20 @@ class HashMap
     puts nil
   end
 
+  def length
+    count = 0
+    @buckets.each do |bucket|
+      next if bucket.nil?
+      p 'i am working'
+      if bucket.is_a?(HashEntry)
+        count += 1
+        next
+      end
+      count += bucket.size
+    end
+    count
+  end
+
   private
 
   def remove_hash_from_bucket(bucket_index)
