@@ -20,7 +20,7 @@ class HashMap
   end
 
   def set(key, value)
-    bucket_index = hash(key) % @capacity
+    bucket_index = get_bucket_index(key)
     raise IndexError if !@buckets.nil? && (bucket_index.negative? || bucket_index >= @buckets.length)
 
     @buckets = Array.new(@capacity) if @buckets.nil?
@@ -32,7 +32,7 @@ class HashMap
   end
 
   def get(key)
-    bucket_index = hash(key) % @capacity
+    bucket_index = get_bucket_index(key)
     raise IndexError if bucket_index.negative? || bucket_index >= @buckets.length
 
     if @buckets[bucket_index].nil?
@@ -46,11 +46,11 @@ class HashMap
   end
 
   def has?(key)
-    bucket_index = hash(key) % @capacity
+    bucket_index = get_bucket_index(key)
     raise IndexError if bucket_index.negative? || bucket_index >= @buckets.length
 
     # p 'STARTING HAS'
-    @buckets[bucket_index]
+    # @buckets[bucket_index]
     desired_hash_entry = get_desired_hash_entry(bucket_index, key)
     unless desired_hash_entry.nil?
       desired_key = desired_hash_entry.key
@@ -59,14 +59,23 @@ class HashMap
     false
   end
 
-  def print_entries
-    if @buckets.nil?
-      @capacity.times do
-        print []
-      end
-      puts nil
-      return
+  def remove(key)
+    if has?(key)
+      bucket_index = get_bucket_index(key)
+      raise IndexError if bucket_index.negative? || bucket_index >= @buckets.length
+
+      desired_hash_entry = get_desired_hash_entry(bucket_index, key)
+      return remove_hash_from_bucket(bucket_index) if desired_hash_entry.nil?
+
+      value = @buckets[bucket_index].remove_by_key(key)
+      return value
     end
+    nil
+  end
+
+  def print_entries
+    return print_empty if @buckets.nil?
+
     @buckets.each do |bucket|
       if bucket.nil?
         print '[]'
@@ -83,11 +92,29 @@ class HashMap
 
   private
 
+  def remove_hash_from_bucket(bucket_index)
+    value = @buckets[bucket_index].value
+    @buckets[bucket_index] = nil
+    value
+  end
+
+  def get_bucket_index(key)
+    hash(key) % @capacity
+  end
+
+  def print_empty
+    @capacity.times do
+      print []
+    end
+    puts nil
+    nil
+  end
+
   def get_desired_hash_entry(bucket_index, key)
     if !@buckets[bucket_index].nil? && @buckets[bucket_index].is_a?(LinkedList)
       linked_list = @buckets[bucket_index]
-      unless linked_list.find(key).nil?
-        desired_node = linked_list.at(linked_list.find(key))
+      unless linked_list.find_by_key(key).nil?
+        desired_node = linked_list.at(linked_list.find_by_key(key))
         desired_hash_entry = desired_node.value
         return desired_hash_entry
       end

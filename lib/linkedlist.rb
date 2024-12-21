@@ -78,6 +78,47 @@ class LinkedList
     false
   end
 
+  def find_by_key(key)
+    return nil if @head.nil?
+
+    index = -1
+    node = @head
+    loop do
+      index += 1
+      return index if node.value.key == key
+      break if node.next_node.nil?
+
+      node = node.next_node
+    end
+    return false if index == -1
+
+    nil
+  end
+
+  def remove_by_key(key)
+    return nil if @head.nil?
+
+    index = -1
+    node = @head
+    previous_node = nil
+    loop do
+      previous_node = node
+      index += 1
+      if node.value.key == key
+        return case_head_node(node) if node == @head
+        return case_last_node(node) if node.next_node.nil?
+
+        previous_node.next_node = node.next_node
+        return node
+      end
+
+      node = node.next_node
+    end
+    return false if index == -1
+
+    nil
+  end
+
   def find(value)
     return nil if @head.nil?
 
@@ -107,7 +148,37 @@ class LinkedList
     "#{result}nil"
   end
 
+  def remove_hash_entry(_entry)
+    return nil if @head.nil?
+
+    index = -1
+    node = @head
+    loop do
+      index += 1
+      return index if node.value.key == key
+      break if node.next_node.nil?
+
+      node = node.next_node
+    end
+    return false if index == -1
+
+    nil
+  end
+
   private
+
+  def case_head_node(node)
+    removed_entry_value = node.value.value
+    node = node.next_node
+    @head = node
+    removed_entry_value
+  end
+
+  def case_last_node(node)
+    removed_entry_value = node.value.value
+    pop
+    removed_entry_value
+  end
 
   def if_hash_entry_to_s(node)
     node.value unless node.value.is_a?(HashEntry)
