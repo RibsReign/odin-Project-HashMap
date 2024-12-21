@@ -23,8 +23,12 @@ class HashMap
     bucket_index = get_bucket_index(key)
     raise IndexError if !@buckets.nil? && (bucket_index.negative? || bucket_index >= @buckets.length)
 
+    # if capacity_reached?
+    #   scale
+    #   rehash
+    # end
     @buckets = Array.new(@capacity) if @buckets.nil?
-    if @buckets[bucket_index].nil?
+    if bucket_at_index(bucket_index).nil?
       @buckets[bucket_index] = HashEntry.new(key, value)
     else
       add_linked_list(bucket_index, key, value)
@@ -35,13 +39,13 @@ class HashMap
     bucket_index = get_bucket_index(key)
     raise IndexError if bucket_index.negative? || bucket_index >= @buckets.length
 
-    if @buckets[bucket_index].nil?
+    if bucket_at_index(bucket_index).nil?
       nil
     else
       desired_hash_entry = get_desired_hash_entry(bucket_index, key)
       return desired_hash_entry unless desired_hash_entry.nil?
 
-      @buckets[bucket_index]
+      bucket_at_index(bucket_index)
     end
   end
 
@@ -49,8 +53,6 @@ class HashMap
     bucket_index = get_bucket_index(key)
     raise IndexError if bucket_index.negative? || bucket_index >= @buckets.length
 
-    # p 'STARTING HAS'
-    # @buckets[bucket_index]
     desired_hash_entry = get_desired_hash_entry(bucket_index, key)
     unless desired_hash_entry.nil?
       desired_key = desired_hash_entry.key
@@ -67,7 +69,7 @@ class HashMap
       desired_hash_entry = get_desired_hash_entry(bucket_index, key)
       return remove_hash_from_bucket(bucket_index) if desired_hash_entry.nil?
 
-      value = @buckets[bucket_index].remove_by_key(key)
+      value = bucket_at_index(bucket_index).remove_by_key(key)
       return value
     end
     nil
@@ -130,7 +132,7 @@ class HashMap
       if bucket.nil?
         array << nil
       elsif bucket.is_a?(HashEntry)
-        array << [bucket.key, bucket.value] 
+        array << [bucket.key, bucket.value]
       elsif bucket.is_a?(LinkedList)
         array << bucket.fetch_linked_list_values
       end
@@ -143,7 +145,6 @@ class HashMap
     @buckets.each do |bucket|
       next if bucket.nil?
 
-      p 'i am working'
       if bucket.is_a?(HashEntry)
         count += 1
         next
@@ -160,10 +161,26 @@ class HashMap
     end
   end
 
+  def capacity_reached?
+    return true if length >= @load_factor * @capacity
+
+    false
+  end
+
+  # def scale
+
+  # end
+
   private
 
+  def bucket_at_index(bucket_index)
+    raise IndexError  if bucket_index.negative? || bucket_index >= @buckets.length
+
+    @buckets[bucket_index]
+  end
+
   def remove_hash_from_bucket(bucket_index)
-    value = @buckets[bucket_index].value
+    value = bucket_at_index(bucket_index).value
     @buckets[bucket_index] = nil
     value
   end
@@ -181,8 +198,8 @@ class HashMap
   end
 
   def get_desired_hash_entry(bucket_index, key)
-    if !@buckets[bucket_index].nil? && @buckets[bucket_index].is_a?(LinkedList)
-      linked_list = @buckets[bucket_index]
+    if !bucket_at_index(bucket_index).nil? && bucket_at_index(bucket_index).is_a?(LinkedList)
+      linked_list = bucket_at_index(bucket_index)
       unless linked_list.find_by_key(key).nil?
         desired_node = linked_list.at(linked_list.find_by_key(key))
         desired_hash_entry = desired_node.value
@@ -193,15 +210,15 @@ class HashMap
   end
 
   def add_linked_list(bucket_index, key, value)
-    if @buckets[bucket_index].is_a?(HashEntry)
+    if bucket_at_index(bucket_index).is_a?(HashEntry)
       list_in_bucket = LinkedList.new
-      list_in_bucket.prepend(@buckets[bucket_index])
+      list_in_bucket.prepend(bucket_at_index(bucket_index))
       list_in_bucket.append(HashEntry.new(key, value))
       @buckets[bucket_index] = list_in_bucket
     else
-      @buckets[bucket_index].prepend(HashEntry.new(key, value))
+      bucket_at_index(bucket_index).prepend(HashEntry.new(key, value))
     end
-    @buckets[bucket_index]
+    bucket_at_index(bucket_index)
   end
   # raise IndexError if index.negative? || index >= @buckets.length
 end
