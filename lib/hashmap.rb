@@ -90,6 +90,38 @@ class HashMap
     puts nil
   end
 
+  def keys
+    return print_empty if @buckets.nil?
+
+    array = []
+    @buckets.each do |bucket|
+      if bucket.nil?
+        array << nil
+      elsif bucket.is_a?(HashEntry)
+        array << bucket.key
+      elsif bucket.is_a?(LinkedList)
+        array << bucket.fetch_linked_list_keys
+      end
+    end
+    array
+  end
+
+  def values
+    return print_empty if @buckets.nil?
+
+    array = []
+    @buckets.each do |bucket|
+      if bucket.nil?
+        array << nil
+      elsif bucket.is_a?(HashEntry)
+        array << bucket.value
+      elsif bucket.is_a?(LinkedList)
+        array << bucket.fetch_linked_list_values
+      end
+    end
+    array
+  end
+
   def length
     count = 0
     @buckets.each do |bucket|

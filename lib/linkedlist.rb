@@ -136,6 +136,32 @@ class LinkedList
     nil
   end
 
+  def fetch_linked_list_keys
+    return nil if @head.nil?
+
+    node = @head
+    result = []
+    until node.next_node.nil?
+      result << node.value.key
+      node = node.next_node
+    end
+    result << node.value.key
+    result
+  end
+
+  def fetch_linked_list_values
+    return nil if @head.nil?
+
+    node = @head
+    result = []
+    until node.next_node.nil?
+      result << node.value.value
+      node = node.next_node
+    end
+    result << node.value.value
+    result
+  end
+
   def my_to_s
     return nil if @head.nil?
 
@@ -186,5 +212,14 @@ class LinkedList
     key = hash_entry.key
     value = hash_entry.value
     "[#{key}, #{value}]"
+  end
+
+  def get_key(_entry)
+    hash_entry = node.value
+    key = hash_entry.key
+    value = hash_entry.value
+    array = []
+    array.push(key, value)
+    array
   end
 end
