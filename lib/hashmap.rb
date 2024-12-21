@@ -94,6 +94,7 @@ class HashMap
     count = 0
     @buckets.each do |bucket|
       next if bucket.nil?
+
       p 'i am working'
       if bucket.is_a?(HashEntry)
         count += 1
@@ -102,6 +103,13 @@ class HashMap
       count += bucket.size
     end
     count
+  end
+
+  def clear
+    @capacity.times do |index|
+      @buckets[index] = nil
+      index + 1
+    end
   end
 
   private
