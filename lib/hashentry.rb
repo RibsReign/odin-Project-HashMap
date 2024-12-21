@@ -8,4 +8,8 @@ class HashEntry
     @key = key
     @value = value
   end
+
+  def hash_entry_to_s
+    "[#{@key}, #{@value}]"
+  end
 end

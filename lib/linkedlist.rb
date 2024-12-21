@@ -95,14 +95,14 @@ class LinkedList
     nil
   end
 
-  def to_s
+  def my_to_s
     return nil if @head.nil?
 
     node = @head
     result = "( #{if_hash_entry_to_s(node)} ) -> "
     until  node.next_node.nil?
-      result += "( #{if_hash_entry_to_s(node)} ) -> "
       node = node.next_node
+      result += "( #{if_hash_entry_to_s(node)} ) -> "
     end
     "#{result}nil"
   end
@@ -114,6 +114,6 @@ class LinkedList
     hash_entry = node.value
     key = hash_entry.key
     value = hash_entry.value
-    "[#{key}][#{value}]"
+    "[#{key}, #{value}]"
   end
 end
