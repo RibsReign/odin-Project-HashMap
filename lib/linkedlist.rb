@@ -162,6 +162,19 @@ class LinkedList
     result
   end
 
+  def fetch_linked_list_key_and_values
+    return nil if @head.nil?
+
+    node = @head
+    result = []
+    until node.next_node.nil?
+      result << [node.value.key, node.value.value]
+      node = node.next_node
+    end
+    result << node.value.value
+    result
+  end
+
   def my_to_s
     return nil if @head.nil?
 
